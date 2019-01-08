@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="DialogAppCompat" parent="Theme.AppCompat.Dialog">
+    <style name="DialogAppCompat" parent="Theme.AppCompat.Dialog.Alert">
 
     </style>
 

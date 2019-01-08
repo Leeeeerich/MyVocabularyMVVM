@@ -2,9 +2,14 @@ package com.guralnya.myvocabulary.model.dto;
 
 public class DictionaryWord {
 
+    //@PrimaryKey
+    private int id;
+
     private String wordName;
+    private String rootOfTheWord;
     private String wordTranscription;
     private String wordTranslate;
+    private boolean missTheWorld;
 
     public DictionaryWord(String wordName, String wordTranscription, String wordTranslate) {
         this.wordName = wordName;
