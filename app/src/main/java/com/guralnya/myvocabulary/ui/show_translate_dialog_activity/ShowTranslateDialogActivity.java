@@ -1,127 +1,104 @@
 package com.guralnya.myvocabulary.ui.show_translate_dialog_activity;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.guralnya.myvocabulary.R;
-
 import com.guralnya.myvocabulary.databinding.ActivityShowTranslateBinding;
-import com.guralnya.myvocabulary.model.dto.DictionaryWord;
+import com.guralnya.myvocabulary.ui.adapters.ImageViewContainerAdapter;
 
-import org.json.JSONArray;
+import java.util.Locale;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+public class ShowTranslateDialogActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.schedulers.Schedulers;
-
-public class ShowTranslateDialogActivity extends AppCompatActivity {
-
-   // private ShowTranslateViewModel mViewModel;
+    private ShowTranslateViewModel mViewModel;
     private ActivityShowTranslateBinding mBinding;
-    DictionaryWord dictionaryWord;
-    String translateJson = "";
+
+    private ViewPager mViewPager;
+    private ImageViewContainerAdapter mImageViewContainerAdapter;
+
+    private TextToSpeech mTextToSpeech;
+    private boolean mIsInit;
+
+    private boolean isNotAddWord = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_show_translate);
 
-        //mViewModel = ViewModelProviders.of(this).get(ShowTranslateViewModel.class);
-
-        final CharSequence text = getIntent()
-                .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT);
-        dictionaryWord = new DictionaryWord(text.toString(), "", "");
-
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_show_translate);
-        mBinding.setWord(dictionaryWord);
 
+        final CharSequence word = getIntent()
+                .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT);
 
+        mViewModel = ViewModelProviders.of(this).get(ShowTranslateViewModel.class);
 
+        mViewModel.initDictionaryWord(word.toString().toLowerCase()).observe(this, dictionaryWord1 -> {
+            mBinding.setWord(dictionaryWord1);
+        });
 
-        Observable<String> yob = new Observable<String>() {
-            @Override
-            protected void subscribeActual(Observer<? super String> observer) {
-                Log.e("URLConnection", "RxJava uhu");
-                try {
-                    translateJson = getTranslateJson("en", "ru", text.toString());
-                } catch (Exception e) {
-                    Log.e("URLConnection", "URL Connection Error = " + e);
-                    e.printStackTrace();
-                }
-
-                Log.e("URLConnection", "translateWord = " + translateJson);
-                try {
-                    dictionaryWord.setWordTranscription("[" + parseTranscription(translateJson) + "]");
-                    dictionaryWord.setWordTranslate(parseTranslate(translateJson));
-                } catch (Exception e) {e.printStackTrace();}
-                mBinding.invalidateAll();
+        //Image carousel
+        mViewPager = mBinding.viewPager;
+        mViewModel.initCoverWordObject(word.toString().toLowerCase()).observe(this, coverWordObject -> {
+            if (coverWordObject != null) {
+                mImageViewContainerAdapter = new ImageViewContainerAdapter(
+                        this, coverWordObject.getPhotos().getPhotoList());
+                mViewPager.setAdapter(mImageViewContainerAdapter);
             }
-        };
+        });
 
-        yob.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.single()).subscribe();
-
-
+        mTextToSpeech = new TextToSpeech(this, this);
+        mBinding.tvTranslateWord.setOnClickListener(v -> {
+            if (mIsInit) {
+                String textToSpeech = word.toString();
+                mTextToSpeech.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null, "id1");
+            }
+        });
     }
 
-    private String getTranslateJson(String langFrom, String langTo,
-                                    String word) throws Exception
-    {
+    public void onClickClose(View view) {
+        finish();
+    }
 
-        String url = "https://translate.googleapis.com/translate_a/single?"+
-                "client=gtx&"+
-                "sl=" + langFrom +
-                "&tl=" + langTo +
-                "&dt=t&dt=rm&q=" + URLEncoder.encode(word, "UTF-8");
+    public void onClickNotAddWord(View view) {
+        isNotAddWord = true;
+    }
 
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestProperty("User-Agent", "Mozilla/5.0");
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mViewModel.notAddWord(isNotAddWord);
+        if (!isNotAddWord) {
+            mViewModel.saveCoverWord(
+                    mImageViewContainerAdapter
+                            .getImageList()
+                            .get(mViewPager.getCurrentItem())
+                            .getUrlM());
         }
-        in.close();
-
-        return response.toString();
     }
 
-    private String parseTranslate(String inputJson) throws Exception
-    {
-        /*
-         * inputJson for word 'hello' translated to language Hindi from English-
-         * [[["नमस्ते","hello",,,1]],,"en"]
-         * We have to get 'नमस्ते ' from this json.
-         */
-
-        JSONArray jsonArray = new JSONArray(inputJson);
-        JSONArray jsonArray1 = (JSONArray) jsonArray.get(0);
-        JSONArray jsonArray2 = (JSONArray) jsonArray1.get(0);
-
-        return jsonArray2.get(0).toString();
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            Locale locale = new Locale("eng");
+            int result = mTextToSpeech.setLanguage(locale);
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                mIsInit = false;
+            } else {
+                mIsInit = true;
+            }
+        } else {
+            mIsInit = false;
+        }
+        Log.d(getClass().getName(), "Initialization TTS = " + mIsInit);
     }
-
-    private String parseTranscription(String inputJson) throws Exception {
-        JSONArray jsonArray = new JSONArray(inputJson);
-        JSONArray jsonArray1 = (JSONArray) jsonArray.get(0);
-        JSONArray jsonArray2 = (JSONArray) jsonArray1.get(1);
-
-        return jsonArray2.get(3).toString();
-    }
-
-
 }

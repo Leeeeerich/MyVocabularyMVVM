@@ -1,35 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import
+            alias="v"
+            type="android.view.View" />
+
         <variable
             name="word"
-            type="com.guralnya.myvocabulary.model.dto.DictionaryWord"/>
+            type="com.guralnya.myvocabulary.model.dto.DictionaryWord" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/tvTranslatedWord"
+        app:layout_constraintTop_toTopOf="@+id/tvTranslatedWord">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:paddingBottom="15dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </android.support.v4.view.ViewPager>
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvTranslateWord"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:gravity="center"
             android:text="@{word.wordName}"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewPager"
+            tools:layout_editor_absoluteY="8dp"
             tools:text="word" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvTranscription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -37,13 +56,15 @@
             android:layout_marginEnd="8dp"
             android:gravity="center"
             android:text="@{word.wordTranscription}"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large.Secondary"
+            android:visibility="@{word.wordTranscription.isEmpty() ? v.GONE : v.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/tvTranslateWord"
             tools:text="[transcription]" />
 
         <TextView
+            android:id="@+id/tvTranslatedWord"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -51,11 +72,45 @@
             android:layout_marginEnd="8dp"
             android:gravity="center"
             android:text="@{word.wordTranslate}"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/tvTranscription"
             tools:text="перевод" />
 
+        <TextView
+            android:id="@+id/tvNotSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:maxLines="2"
+            android:minLines="2"
+            android:onClick="onClickNotAddWord"
+            android:text="@string/not_add_word"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintBottom_toBottomOf="@+id/tvOkay"
+            app:layout_constraintEnd_toStartOf="@+id/tvOkay"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvOkay" />
+
+        <TextView
+            android:id="@+id/tvOkay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:onClick="onClickClose"
+            android:text="@android:string/ok"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintStart_toEndOf="@+id/tvNotSave"
+            app:layout_constraintTop_toBottomOf="@+id/tvTranslatedWord" />
     </android.support.constraint.ConstraintLayout>
 </layout>

@@ -2,4 +2,8 @@
     <string name="app_name">My Vocabulary</string>
 
     <string name="add_word">Add Word</string>
+    <string name="not_add_word">Not add\nword</string>
+    <string name="okay">Okay</string>
+
+    <string name="pls_press_for_view_translated">Pls pressed for result</string>
 </resources>
