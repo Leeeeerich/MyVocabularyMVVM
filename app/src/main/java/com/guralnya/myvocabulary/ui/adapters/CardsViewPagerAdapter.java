@@ -12,24 +12,18 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.guralnya.myvocabulary.MainActivity;
 import com.guralnya.myvocabulary.R;
 import com.guralnya.myvocabulary.databinding.CardViewWordBinding;
 import com.guralnya.myvocabulary.model.dto.DictionaryWord;
 
-import java.util.Locale;
-
-import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class CardsViewPagerAdapter extends PagerAdapter implements TextToSpeech.OnInitListener {
+public class CardsViewPagerAdapter extends PagerAdapter/* implements TextToSpeech.OnInitListener */ {
 
     private Context mContext;
 
-    private Realm realm;
     private RealmResults<DictionaryWord> mDictionaryWordRealmResults;
-
-    private TextToSpeech mTextToSpeech;
-    private boolean mIsInit;
 
     public CardsViewPagerAdapter(Context context, RealmResults<DictionaryWord> dictionaryWordRealmResults) {
         this.mContext = context;
@@ -55,12 +49,9 @@ public class CardsViewPagerAdapter extends PagerAdapter implements TextToSpeech.
                 .apply(RequestOptions.centerInsideTransform())
                 .into(binding.imCoverWord);
 
-        mTextToSpeech = new TextToSpeech(mContext, this);
         binding.tvTranslateWord.setOnClickListener(v -> {
-            if (mIsInit) {
-                String textToSpeech = dictionaryWord.getWordName();
-                mTextToSpeech.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null, "id1");
-            }
+            String textToSpeech = dictionaryWord.getWordName();
+            ((MainActivity) mContext).getTextToSpeech().speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null, "id1");
         });
 
         container.addView(binding.getRoot());
@@ -80,21 +71,5 @@ public class CardsViewPagerAdapter extends PagerAdapter implements TextToSpeech.
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
-    }
-
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            Locale locale = new Locale("eng");
-            int result = mTextToSpeech.setLanguage(locale);
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                mIsInit = false;
-            } else {
-                mIsInit = true;
-            }
-        } else {
-            mIsInit = false;
-        }
-        Log.d(getClass().getName(), "Initialization TTS = " + mIsInit);
     }
 }

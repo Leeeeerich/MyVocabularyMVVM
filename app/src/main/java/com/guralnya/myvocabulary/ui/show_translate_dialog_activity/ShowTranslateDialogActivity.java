@@ -84,6 +84,7 @@ public class ShowTranslateDialogActivity extends AppCompatActivity implements Te
                             .get(mViewPager.getCurrentItem())
                             .getUrlM());
         }
+        mTextToSpeech.shutdown();
     }
 
     @Override
