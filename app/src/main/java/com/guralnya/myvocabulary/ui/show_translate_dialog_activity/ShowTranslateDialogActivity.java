@@ -78,11 +78,13 @@ public class ShowTranslateDialogActivity extends AppCompatActivity implements Te
         super.onStop();
         mViewModel.notAddWord(isNotAddWord);
         if (!isNotAddWord) {
-            mViewModel.saveCoverWord(
-                    mImageViewContainerAdapter
-                            .getImageList()
-                            .get(mViewPager.getCurrentItem())
-                            .getUrlM());
+            if (mImageViewContainerAdapter != null) {
+                mViewModel.saveCoverWord(
+                        mImageViewContainerAdapter
+                                .getImageList()
+                                .get(mViewPager.getCurrentItem())
+                                .getUrlM());
+            }
         }
         mTextToSpeech.shutdown();
     }
