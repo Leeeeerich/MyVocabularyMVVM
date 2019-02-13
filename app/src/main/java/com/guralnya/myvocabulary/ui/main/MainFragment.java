@@ -41,7 +41,6 @@ public class MainFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         MainFragmentBinding binding = DataBindingUtil.inflate(
                 inflater, R.layout.main_fragment, container, false);
-        ;
 
         Realm realm = Realm.getDefaultInstance();
         RealmResults<DictionaryWord> realmResults = realm.where(DictionaryWord.class).findAll();
@@ -50,14 +49,11 @@ public class MainFragment extends Fragment {
         mViewPager.setAdapter(new CardsViewPagerAdapter(getActivity(), realmResults));
 
         return binding.getRoot();
-
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        // TODO: Use the ViewModel
     }
-
 }

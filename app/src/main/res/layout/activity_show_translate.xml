@@ -34,67 +34,48 @@
 
         <TextView
             android:id="@+id/tvTranslateWord"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:drawableStart="@drawable/ic_horn"
             android:gravity="center"
             android:text="@{word.wordName}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewPager"
-            tools:layout_editor_absoluteY="8dp"
             tools:text="word" />
 
         <TextView
             android:id="@+id/tvTranscription"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:drawableTint="#5c000000"
             android:gravity="center"
-            android:text="@{word.wordTranscription}"
+            android:text="@{@string/square_brackets(word.wordTranscription)}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large.Secondary"
             android:visibility="@{word.wordTranscription.isEmpty() ? v.GONE : v.VISIBLE}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvTranslateWord"
+            app:layout_constraintStart_toStartOf="@+id/tvTranslateWord"
             app:layout_constraintTop_toBottomOf="@+id/tvTranslateWord"
             tools:text="[transcription]" />
 
         <TextView
             android:id="@+id/tvTranslatedWord"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:gravity="center"
             android:text="@{word.wordTranslate}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvTranscription"
+            app:layout_constraintStart_toStartOf="@+id/tvTranscription"
             app:layout_constraintTop_toBottomOf="@+id/tvTranscription"
             tools:text="перевод" />
-
-        <TextView
-            android:id="@+id/tvNotSave"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            android:maxLines="2"
-            android:minLines="2"
-            android:onClick="onClickNotAddWord"
-            android:text="@string/not_add_word"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            app:layout_constraintBottom_toBottomOf="@+id/tvOkay"
-            app:layout_constraintEnd_toStartOf="@+id/tvOkay"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvOkay" />
 
         <TextView
             android:id="@+id/tvOkay"
@@ -110,7 +91,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="3"
-            app:layout_constraintStart_toEndOf="@+id/tvNotSave"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTranslatedWord" />
     </android.support.constraint.ConstraintLayout>
 </layout>

@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech {
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
         }
-
-        mTextToSpeech = new android.speech.tts.TextToSpeech(this, this);
     }
 
     @Override
@@ -48,6 +46,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech {
             return mTextToSpeech;
         }
         return null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTextToSpeech = new android.speech.tts.TextToSpeech(this, this);
     }
 
     @Override
