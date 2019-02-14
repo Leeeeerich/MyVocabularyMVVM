@@ -46,7 +46,7 @@ public class MainFragment extends Fragment {
         RealmResults<DictionaryWord> realmResults = realm.where(DictionaryWord.class).findAll();
 
         mViewPager = binding.viewPager;
-        mViewPager.setAdapter(new CardsViewPagerAdapter(getActivity(), realmResults));
+        mViewPager.setAdapter(new CardsViewPagerAdapter(getActivity(), realmResults, mViewPager));
 
         return binding.getRoot();
     }
