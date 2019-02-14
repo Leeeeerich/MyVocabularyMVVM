@@ -8,6 +8,7 @@
     <string name="pls_press_for_view_translated">Please pressed\n for translated</string>
     
     <string name="square_brackets">[%1$s]</string>
+    <string name="volume_lower">Volume lower 40\%</string>
 
     <string name="know">I Know</string>
     <string name="do_not_know">I don\'t know</string>

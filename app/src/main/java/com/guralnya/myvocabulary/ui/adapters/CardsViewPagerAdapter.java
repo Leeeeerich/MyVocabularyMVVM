@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +18,21 @@ import com.guralnya.myvocabulary.MainActivity;
 import com.guralnya.myvocabulary.R;
 import com.guralnya.myvocabulary.databinding.CardViewWordBinding;
 import com.guralnya.myvocabulary.model.dto.DictionaryWord;
+import com.guralnya.myvocabulary.utils.Tools;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class CardsViewPagerAdapter extends PagerAdapter {
 
     private Context mContext;
     private RealmResults<DictionaryWord> mDictionaryWordRealmResults;
+    private ViewPager mViewPager;
 
-    public CardsViewPagerAdapter(Context context, RealmResults<DictionaryWord> dictionaryWordRealmResults) {
+    public CardsViewPagerAdapter(Context context, RealmResults<DictionaryWord> dictionaryWordRealmResults, ViewPager viewPager) {
         this.mContext = context;
         this.mDictionaryWordRealmResults = dictionaryWordRealmResults;
+        this.mViewPager = viewPager;
     }
 
     @NonNull
@@ -52,21 +57,39 @@ public class CardsViewPagerAdapter extends PagerAdapter {
         binding.tvTranslateWord.setOnClickListener(v -> {
             String textToSpeech = dictionaryWord.getWordName();
             ((MainActivity) mContext).getTextToSpeech().speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null, "id1");
+
+            showVolume();
         });
 
-        binding.tvTranslatedWord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((TextView) v).getText().equals(dictionaryWord.getWordTranslate())) {
-                    ((TextView) v).setText(R.string.pls_press_for_view_translated);
-                } else {
-                    ((TextView) v).setText(dictionaryWord.getWordTranslate());
-                }
+        binding.tvTranslatedWord.setOnClickListener(v -> {
+            if (((TextView) v).getText().equals(dictionaryWord.getWordTranslate())) {
+                ((TextView) v).setText(R.string.pls_press_for_view_translated);
+            } else {
+                ((TextView) v).setText(dictionaryWord.getWordTranslate());
             }
+        });
+
+        binding.btDoNotKnow.setOnClickListener(v -> mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1));
+
+        binding.btKnow.setOnClickListener(v -> {
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            dictionaryWord.setRating(+1);
+            realm.copyToRealmOrUpdate(dictionaryWord);
+            realm.commitTransaction();
+            realm.close();
         });
 
         container.addView(binding.getRoot());
         return binding.getRoot();
+    }
+
+    private void showVolume() {
+        if (Tools.getVolumeLevel(mContext) < 4) {
+            Tools.toast(mContext, mContext.getString(R.string.volume_lower));
+        }
     }
 
     @Override
