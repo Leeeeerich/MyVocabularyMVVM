@@ -16,4 +16,14 @@
     <style name="TextAppearance.AppCompat.Large.Secondary">
         <item name="android:textColor">@android:color/secondary_text_dark</item>
     </style>
+
+    <style name="Widget.AppCompat.Button.Colored.Green">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="colorControlHighlight">#673ab7</item>
+    </style>
+
+    <style name="Widget.AppCompat.Button.Colored.Red">
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="colorControlHighlight">#673ab7</item>
+    </style>
 </resources>

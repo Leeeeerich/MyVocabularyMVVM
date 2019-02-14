@@ -12,24 +12,31 @@
         <variable
             name="word"
             type="com.guralnya.myvocabulary.model.dto.DictionaryWord" />
+
+        <variable
+            name="visibleTranslated"
+            type="boolean"/>
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="0dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <ImageView
@@ -43,8 +50,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.32999998"
-                    app:layout_constraintVertical_chainStyle="packed" />
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:srcCompat="@tools:sample/avatars" />
 
                 <TextView
                     android:id="@+id/tvTranslateWord"
@@ -54,6 +61,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:drawableStart="@drawable/ic_horn"
                     android:gravity="center"
                     android:text="@{word.wordName}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -73,7 +81,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:gravity="center"
-                    android:text="@{word.wordTranscription}"
+                    android:text="@{@string/square_brackets(word.wordTranscription)}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large.Secondary"
                     android:visibility="@{word.wordTranscription.isEmpty() ? v.GONE : v.VISIBLE}"
                     app:layout_constraintBottom_toTopOf="@+id/tvTranslatedWord"
@@ -93,15 +101,42 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:gravity="center"
-                    android:text="@{word.wordTranslate}"
+                    android:text="@string/pls_press_for_view_translated"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/btKnow"
                     app:layout_constraintEnd_toEndOf="@+id/tvTranscription"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@+id/tvTranscription"
                     app:layout_constraintTop_toBottomOf="@+id/tvTranscription"
                     tools:text="Translated Word" />
-            </LinearLayout>
+
+                <Button
+                    android:id="@+id/btDoNotKnow"
+                    android:theme="@style/Widget.AppCompat.Button.Colored.Red"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/do_not_know"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btKnow"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/btKnow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/know"
+                    android:theme="@style/Widget.AppCompat.Button.Colored.Green"
+                    app:layout_constraintBottom_toBottomOf="@+id/btDoNotKnow"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/btDoNotKnow"
+                    app:layout_constraintTop_toTopOf="@+id/btDoNotKnow" />
+
+            </android.support.constraint.ConstraintLayout>
 
         </android.support.v7.widget.CardView>
     </LinearLayout>

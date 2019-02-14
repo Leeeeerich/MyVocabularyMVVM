@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -19,10 +20,10 @@ import com.guralnya.myvocabulary.model.dto.DictionaryWord;
 
 import io.realm.RealmResults;
 
-public class CardsViewPagerAdapter extends PagerAdapter/* implements TextToSpeech.OnInitListener */ {
+public class CardsViewPagerAdapter extends PagerAdapter {
 
     private Context mContext;
-
+    private boolean mVisibilityTranslated = false;
     private RealmResults<DictionaryWord> mDictionaryWordRealmResults;
 
     public CardsViewPagerAdapter(Context context, RealmResults<DictionaryWord> dictionaryWordRealmResults) {
@@ -52,6 +53,19 @@ public class CardsViewPagerAdapter extends PagerAdapter/* implements TextToSpeec
         binding.tvTranslateWord.setOnClickListener(v -> {
             String textToSpeech = dictionaryWord.getWordName();
             ((MainActivity) mContext).getTextToSpeech().speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null, "id1");
+        });
+
+        binding.tvTranslatedWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mVisibilityTranslated) {
+                    ((TextView) v).setText(R.string.pls_press_for_view_translated);
+                    mVisibilityTranslated = false;
+                } else {
+                    ((TextView) v).setText(dictionaryWord.getWordTranslate());
+                    mVisibilityTranslated = true;
+                }
+            }
         });
 
         container.addView(binding.getRoot());
