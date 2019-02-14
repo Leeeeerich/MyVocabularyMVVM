@@ -23,7 +23,6 @@ import io.realm.RealmResults;
 public class CardsViewPagerAdapter extends PagerAdapter {
 
     private Context mContext;
-    private boolean mVisibilityTranslated = false;
     private RealmResults<DictionaryWord> mDictionaryWordRealmResults;
 
     public CardsViewPagerAdapter(Context context, RealmResults<DictionaryWord> dictionaryWordRealmResults) {
@@ -58,12 +57,10 @@ public class CardsViewPagerAdapter extends PagerAdapter {
         binding.tvTranslatedWord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mVisibilityTranslated) {
+                if (((TextView) v).getText().equals(dictionaryWord.getWordTranslate())) {
                     ((TextView) v).setText(R.string.pls_press_for_view_translated);
-                    mVisibilityTranslated = false;
                 } else {
                     ((TextView) v).setText(dictionaryWord.getWordTranslate());
-                    mVisibilityTranslated = true;
                 }
             }
         });
